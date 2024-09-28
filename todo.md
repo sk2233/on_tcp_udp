@@ -27,7 +27,6 @@ ssh也实现不了，跟tls不是一个东西
 <br>tls资料 https://hpbn.co/transport-layer-security-tls/
 同一个客服端主机的tls session会复用，服务端需要缓存相关 session信息
 
-
 https://www.youtube.com/watch?v=25_ftpJ-2ME
 https://tls12.xargs.org/
 ![img.png](img.png)
