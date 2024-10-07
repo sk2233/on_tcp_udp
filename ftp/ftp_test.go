@@ -5,6 +5,7 @@
 package ftp
 
 import (
+	"fmt"
 	"my_tcp/utils"
 	"os"
 	"testing"
@@ -15,10 +16,10 @@ func TestFTP(t *testing.T) {
 	client := NewFTPClient(conf.FTPAddr)
 	client.Login(conf.FTPUser, conf.FTPPasswd)
 
-	//items := client.List("./")
-	//for _, item := range items {
-	//	fmt.Println(item)
-	//}
+	items := client.List("./")
+	for _, item := range items {
+		fmt.Println(item)
+	}
 	//client.Del("new.jpeg")
 	//out := client.Get("20240123-184937.jpeg")
 	//open, err := os.Create(utils.BasePath + "ftp/temp.jpeg")

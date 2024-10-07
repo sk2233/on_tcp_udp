@@ -29,7 +29,7 @@ func (f *Frame) GetData() []byte {
 	}
 
 	res := make([]byte, len(f.Data))
-	for i := 0; i < len(res); i++ { // 客服端发的数据会简单加密 就是异或一下 服务端不需要 但是把密钥也发过来加了个寂寞？
+	for i := 0; i < len(res); i++ { // 客服端发的数据会mask一下不发送明文 就是异或一下 服务端不需要
 		res[i] = f.Data[i] ^ f.MaskKey[i%4]
 	}
 	return res
