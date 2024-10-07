@@ -1,5 +1,4 @@
 .idea
-*/*.pcapng
 hls/prog/out.mp4
 rtsp/test.aac
 rtsp/test.h264
