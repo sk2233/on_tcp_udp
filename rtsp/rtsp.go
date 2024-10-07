@@ -171,8 +171,10 @@ func (h *RTSPHelper) RunAudioRTP() {
 func (h *RTSPHelper) SendAudioFrame(conn *net.UDPConn, frame []byte) {
 	hdr := NewRTPHeader(h.AudioSeq, h.AudioTimestamp, RTPTypeAcc)
 	data := make([]byte, 4)
+	// 固定要求
 	data[0] = 0x00
 	data[1] = 0x10
+	// 存储帧数据长度
 	frameLen := len(frame)
 	data[2] = byte((frameLen & 0x1FE0) >> 5) // 高 8 位
 	data[3] = byte((frameLen & 0x1F) << 3)   // 低 5 位
@@ -186,6 +188,7 @@ func (h *RTSPHelper) ReadAudioFrame() []byte {
 	if !IsValidAcc(h.AudioData[h.AudioDataIdx:]) {
 		panic("err acc file")
 	}
+	// acc 编码的帧头部信息固定 7byte 从中获取帧长度
 	frameLen := GetAccFrameLen(h.AudioData[h.AudioDataIdx:])
 	start := h.AudioDataIdx + 7
 	h.AudioDataIdx += frameLen
@@ -193,6 +196,7 @@ func (h *RTSPHelper) ReadAudioFrame() []byte {
 }
 
 func GetAccFrameLen(data []byte) int {
+	// 13bit 的帧长度 横跨  4 5 6 bit
 	return (int(data[3]&0x03) << 11) | (int(data[4]) << 3) | (int(data[5]&0xE0) >> 5)
 }
 
@@ -259,7 +263,7 @@ const (
 
 func NewRTPHeader(seq uint16, timestamp uint32, rtpType uint8) *RTPHeader {
 	return &RTPHeader{
-		Flag1:     0b10_0_0_0000,         // 版本 pad extension csID  只有版本选 2，其他都是 0
+		Flag1:     0b10_0_0_0000,         // 版本 pad extension csID  只有版本选 2，其他都是 0  不需要这些扩展
 		Flag2:     0b1000_0000 | rtpType, // 指定负载类型
 		Seq:       seq,
 		Timestamp: timestamp,
@@ -268,14 +272,14 @@ func NewRTPHeader(seq uint16, timestamp uint32, rtpType uint8) *RTPHeader {
 }
 
 func (h *RTSPHelper) SendVideoFrame(conn *net.UDPConn, frame []byte) {
-	naluType := frame[0]
+	naluType := frame[0]         // F 1bit NRI 2bit Type 5bit
 	if len(frame) > RTPMaxSize { // 分片传输
 		l := RTPMaxSize - 2                              // 分片的话前两位要用于标记分片，不能用于数据传输
 		for start := 1; start < len(frame); start += l { // 第一位可以不要了
 			rtpHdr := NewRTPHeader(h.VideoSeq, h.VideoTimestamp, RTPTypeH264)
-			data := make([]byte, 2) // 前两位标记分片
-			data[0] = (naluType & 0x60) | 28
-			data[1] = naluType & 0x1F
+			data := make([]byte, 2)          // 前两位标记分片   原来一个头被拆分成了两份
+			data[0] = (naluType & 0xE0) | 28 // NRI       1 1 1 0 0   Type = FU-A 标记 标记为分片单元
+			data[1] = naluType & 0x1F        // S 1bit E 1bit R 1bit 必须为0 TYPE
 			if start == 1 {
 				data[1] |= 0x80 // 开始标记
 			} else if start+l >= len(frame) {
@@ -309,6 +313,7 @@ func (h *RTSPHelper) SendRTPHdrAndData(conn *net.UDPConn, hdr *RTPHeader, frame 
 func (s *RTSPServer) HandleConn(conn net.Conn) {
 	localAddr := conn.LocalAddr().(*net.TCPAddr)
 	remoteAddr := conn.RemoteAddr().(*net.TCPAddr)
+	fmt.Printf("new conn %s\n", remoteAddr.String())
 	helper := &RTSPHelper{
 		Session:        genSession(),
 		Run:            false,

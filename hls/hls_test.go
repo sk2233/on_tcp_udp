@@ -20,6 +20,7 @@ func TestHLS(t *testing.T) { // 这里只测试了点播，直播的 m3u8文件�
 	MergeHLS(savePath)
 }
 
+// ffmpeg -i concat:fileSequence0.ts|fileSequence1.ts -c copy output.mp4
 func TestIt(t *testing.T) {
 	// 定义需要合并的视频文件列表
 	videos := []string{utils.BasePath + "hls/prog/fileSequence0.ts", utils.BasePath + "hls/prog/fileSequence1.ts"}
