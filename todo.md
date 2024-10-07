@@ -1,3 +1,4 @@
+飞书文档：https://a08imyjk6va.feishu.cn/wiki/PqLnw7EeOigJtIkfB7fcvDCsn3d
 - [x] websocket 
 <br>抓开源实现的包
 - [x] https 
@@ -30,3 +31,7 @@ ssh也实现不了，跟tls不是一个东西
 https://www.youtube.com/watch?v=25_ftpJ-2ME
 https://tls12.xargs.org/
 ![img.png](img.png)
+推荐文章：https://hpbn.co/<br>
+跨域请求是浏览器的保护策略，若是开启跨域浏览器会自动携带
+Origin 头，若是对方允许跨域访问可以设置 Access-Control-Allow-Origin 头来回应
+响应没有该头会跨域失败
