@@ -156,7 +156,7 @@ func (h *RTSPHelper) RunAudioRTP() {
 	bs, err := os.ReadFile("/Users/bytedance/Documents/go/my_tcp/rtsp/test.aac")
 	utils.HandleErr(err)
 	h.AudioData = bs // 为了方便索引先全部放到内存里
-	for {
+	for {            // 音频一帧是 1024 个采样
 		time.Sleep(time.Second / (44100 / 1024))
 		if !h.Run {
 			continue
@@ -214,6 +214,7 @@ func (h *RTSPHelper) RunVideoRTP() {
 			continue
 		}
 
+		// 可以每次传 1 帧，也可以传多帧，不过这里简单起见 一次传 1 帧
 		frame := h.ReadVideoFrame()
 		conn := h.GetVideoConn()
 		h.SendVideoFrame(conn, frame)

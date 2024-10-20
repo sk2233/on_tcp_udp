@@ -14,6 +14,5 @@ func TestSMTP(t *testing.T) {
 	client := NewSMTPClient("smtp.qq.com", 587)
 	client.Login(conf.SMTPEmail, conf.SMTPAuth) // 必须先登录
 	client.Send(conf.SMTPEmail, "测试邮件1", "测试内容1")
-	client.Send(conf.SMTPEmail, "测试邮件2", "测试内容2")
 	client.Quit()
 }

@@ -40,7 +40,7 @@ func ReadSMTP(conn net.Conn) *SMTPResp {
 	bs := make([]byte, 4096)
 	l, err := conn.Read(bs)
 	utils.HandleErr(err)
-	line := string(bs[:l])
+	line := strings.Trim(string(bs[:l]), "\u001A\u0000\n")
 	index := strings.Index(line, " ")
 	code, err := strconv.Atoi(line[:index])
 	utils.HandleErr(err)

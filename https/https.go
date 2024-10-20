@@ -37,7 +37,7 @@ func (h *HttpsServer) RegisterHandler(path string, handler HttpsHandler) {
 }
 
 func (h *HttpsServer) Listen() {
-	pair, err := tls.LoadX509KeyPair(h.CertFile, h.KeyFile) // 加载证书并使用 tls 的服务端
+	pair, err := tls.LoadX509KeyPair(h.CertFile, h.KeyFile) // 加载证书与私钥
 	utils.HandleErr(err)
 	conf := &tls.Config{Certificates: []tls.Certificate{pair}}
 	listen, err := tls.Listen("tcp", h.Addr, conf)

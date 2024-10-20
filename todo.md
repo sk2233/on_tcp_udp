@@ -3,6 +3,7 @@
 <br>抓开源实现的包
 - [x] https 
 借助go tls库实现的
+https://tls12.xargs.org/#client-encryption-keys-calculation
 - [x] ftp
 <br>抓 QuickFTP 的包
 - [x] hls 
