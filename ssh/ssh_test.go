@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"my_tcp/utils"
 	"testing"
+
+	"github.com/luke-park/ecdh25519"
 )
 
 // ssh -o StrictHostKeyChecking=no  sk@192.168.31.182  采用非严格校验
@@ -22,4 +24,15 @@ func TestSSH(t *testing.T) {
 	fmt.Println(string(data))
 
 	client.Close()
+}
+
+func TestEcdh25519(t *testing.T) {
+	prv1, _ := ecdh25519.GenerateKey()
+	prv2, _ := ecdh25519.GenerateKey()
+
+	s1 := prv1.ComputeSecret(prv2.Public())
+	s2 := prv2.ComputeSecret(prv1.Public())
+
+	fmt.Println(s1, len(s1))
+	fmt.Println(s2, len(s2))
 }
